@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background: linear-gradient(rgba(204, 217, 218, 0.5), rgba(0, 0, 0, 0.7)),
+    url("./img/bg.jpg") center/cover no-repeat;
 }
 
 .App-logo {
@@ -14,7 +16,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +36,29 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.btn {
+  padding: 1rem;
+  background-color: transparent;
+  color: white;
+  border: white 1px solid;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+  font-size: 15px;
+  text-transform: uppercase;
+  transition: all 0.3s linear;
+}
+
+.btn:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border: black 1px solid;
+}
+
+footer p {
+  margin: 0;
+  padding-bottom: 1rem;
+  color: white;
+  font-size: large;
 }

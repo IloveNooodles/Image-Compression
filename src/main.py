@@ -20,6 +20,5 @@ with Image.open("D:\\Coding\\Algeo02-20029\src\\assets\\1.jpg", mode="r") as im:
 # # def run():
 
 
-
 # # if __name__ == "__main__":
 # #   run()
