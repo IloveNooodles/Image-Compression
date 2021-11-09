@@ -1,4 +1,5 @@
 import "./App.css";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
             You can compress jpg/png file and with some quality precision. To
             get started click the button.
           </p>
-          <button className="btn">Get Started</button>
+          <button className="btn">Upload an image</button>
         </header>
       </body>
       <footer>
