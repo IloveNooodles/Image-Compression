@@ -1,6 +1,7 @@
 import numpy as np
 import sympy as sp
-
+impo
+print(test)
 
 rng = np.random.default_rng()
 
@@ -29,18 +30,32 @@ def detMatrix(Matrix):
   x = sp.Symbol('x')
   x = Matrix.det()
   print(x)
-  # try:
-  #   return Matrix.det()
-  # except:
-  #   return "Tidak memiliki determinant"
-# def eigenMatrix(Matrix, eigenValue):
-x = sp.Symbol('x')
-ans = sp.solve(x < 3)
-print(ans)
+  try:
+    return Matrix.det()
+  except:
+    return "Tidak memiliki determinant"
+
+def simultaneous_power_iteration(A, k):
+    n, m = A.shape
+    Q = np.random.rand(n, k)
+    Q, _ = np.linalg.qr(Q)
+    Q_prev = Q
+ 
+    for i in range(1000):
+        Z = A.dot(Q)
+        Q, R = np.linalg.qr(Z)
+
+        # can use other stopping criteria as well 
+        err = ((Q - Q_prev) ** 2).sum()
+        if i % 10 == 0:
+            print(i, err)
+
+        Q_prev = Q
+        if err < 1e-3:
+            break
+
+    return np.diag(R), Q
 
 
-# a = np.array((m, n))
-# a = np.array([0, 1, 5, 3, -6, 9, 2, 6, 1])
-# a = a.reshape(3, 3)
-# print(a)
-# print(detMatrix(a))
+
+
