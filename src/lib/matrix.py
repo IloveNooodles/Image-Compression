@@ -1,7 +1,5 @@
 import numpy as np
 import sympy as sp
-impo
-print(test)
 
 rng = np.random.default_rng()
 
