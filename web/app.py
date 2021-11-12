@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import numpy as np
 import time
+import html
 from PIL import Image
 
 # ========================== Fungsionalitas compress image ==========================
@@ -36,7 +37,10 @@ def SVD(Matrix, k):
   SIG = np.diag(SIG)
   SIGRow, SIGWidth = SIG.shape
   SIG_2 = np.pad(SIG, ((0, height - SIGRow), (0, width - SIGWidth)))
-  
+
+  if (np.linalg.det(SIG) == 0):
+    return Matrix
+
   VT = np.linalg.inv(SIG) @ np.transpose(U) @ Matrix
   VTHeight, VTWidth = VT.shape
   VT_2 = np.pad(VT, ((0, width - VTHeight), (0,0)))
@@ -45,6 +49,16 @@ def SVD(Matrix, k):
 def compressImage(filename, img, compressionRate):
   with Image.open(img, mode="r") as im:
     hasAlpha = False # Cek jika memiliki alpha channel.
+    oldFormat = None
+    if (im.mode == 'P'):
+      oldFormat = 'P'
+      im = im.convert('RGBA')
+    elif (im.mode == 'L'):
+      oldFormat = 'L'
+      im = im.convert('RGB')
+    elif (im.mode == 'LA'):
+      oldFormat = 'LA'
+      im = im.convert('RGBA')
     channels = Image.Image.split(im)
     R = np.asarray(channels[0]).astype(float)
     G = np.asarray(channels[1]).astype(float)
@@ -67,6 +81,8 @@ def compressImage(filename, img, compressionRate):
       IM_matr = np.dstack((svdR, svdG, svdB)).astype(np.uint8)
     
     IM_Final = Image.fromarray(np.uint8(IM_matr))
+    if (oldFormat != None):
+      IM_Final = IM_Final.convert(oldFormat)
     IM_Final.save(f'static/compressed/{filename}')
 # ========================== End of fungsionalitas compress image ==========================
 
@@ -111,12 +127,24 @@ def compress(filename, ext, ctime):
     compressImage(f'{filename}{ext}', f"static/uploads/{filename}{ext}", k)
     duration = round(time.time() - start_time, 2)
     return redirect(f'/compress/{filename}/{ext}/{duration}')
-  origPath = url_for('static', filename=f'uploads/{filename}{ext}')
-  compressedPath = url_for('static', filename=f'compressed/{filename}{ext}')
+  origPath = f'static/uploads/{html.unescape(filename)}{ext}'
+  compressedPath = f'static/compressed/{html.unescape(filename)}{ext}'
 
   # Menghitung pixel difference percentage 
-  i1 = Image.open(origPath[1:])
-  i2 = Image.open(compressedPath[1:])
+  i1 = Image.open(origPath)
+  if (i1.mode == 'P'):
+    i1 = i1.convert('RGBA')
+  elif (i1.mode == 'L'):
+    i1 = i1.convert('RGB')
+  elif (i1.mode == 'LA'):
+    i1 = i1.convert('RGBA')
+  i2 = Image.open(compressedPath)
+  if (i2.mode == 'P'):
+    i2 = i2.convert('RGBA')
+  elif (i2.mode == 'L'):
+    i2 = i2.convert('RGB')
+  elif (i2.mode == 'LA'):
+    i2 = i2.convert('RGBA')
   pairs = zip(i1.getdata(), i2.getdata())
   if len(i1.getbands()) == 1:
       # for gray-scale jpegs
@@ -124,6 +152,8 @@ def compress(filename, ext, ctime):
   else:
       dif = sum(abs(c1-c2) for p1,p2 in pairs for c1,c2 in zip(p1,p2))
   
+  origPath = url_for('static', filename=f'uploads/{filename}{ext}')
+  compressedPath = url_for('static', filename=f'compressed/{filename}{ext}')
   ncomponents = i1.size[0] * i1.size[1] * 3
   diffPercentage = round((dif / 255.0 * 100) / ncomponents, 2)
   return render_template('compress.html', origPath=origPath, compressedPath=compressedPath, time=ctime, diffPercentage=diffPercentage)
