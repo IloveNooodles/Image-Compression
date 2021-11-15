@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+  <title>Image Compressor</title>
+</head>
+<body>
+  <div class="index-container">
+    <div class="container">
+      <h1>Image Compressor</h1>
+      <p>Allowed extensions: jpg, jpeg, png.</p>
+      <form action="/" method="POST" enctype="multipart/form-data" class="index-form">
+        <div class="upload-div">
+          <label for="upload" class="upload-btn">Upload file</label>
+          <input type="file" id="upload" name="image">
+        </div>
+        <button type="submit" class="index-submit-btn">Submit</button>
+      </form>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <p class="alert-text">[ERROR] {{ message }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+</body>
+</html>

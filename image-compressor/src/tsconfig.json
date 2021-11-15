@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react-jsx",
-    "target": "esnext",
-    "watch": true,
-    "lib": ["DOM", "ES2021"]
-  }
-}
